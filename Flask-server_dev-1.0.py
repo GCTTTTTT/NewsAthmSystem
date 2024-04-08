@@ -4,7 +4,7 @@ import pandas as pd
 from flask import *
 from flask_cors import CORS  # 导入CORS模块
 from gevent import pywsgi
-from ProcessCode.survicesImpl import get_data_MIXed_Impl,get_data_ByType_Impl,get_Categorys_Impl,get_randomArt_Impl,get_ArtMain_Impl   # 正式版记得打开这个！！！！
+from ProcessCode.survicesImpl import get_data_MIXed_Impl,get_data_ByType_Impl,get_Categorys_Impl,get_randomArt_Impl,get_ArtMain_Impl,get_Search_Impl   # 正式版记得打开这个！！！！
 import os 
 
 # 使用Flask创建算法接口
@@ -113,6 +113,31 @@ def get_randomArt():
     response.headers['Content-Type'] = 'application/json; charset=utf-8'
     return response  # 将字节串解码为UTF-8字符串
 
+# 搜索功能实现
+@app.route('/search', methods=['GET'])
+def get_data_search():
+    # 获取 URL 参数中的参数值
+    date_sel =  request.args.get('dateSel') # 获取日期参数
+
+    key = request.args.get('key')
+    page = request.args.get('page')
+    pageSize = request.args.get('pageSize')
+    
+    print(date_sel)
+    print(key)
+    print(page)
+    print(pageSize)
+
+    # result_json = get_data_ByType_Impl(artType,page,pageSize)
+    result_json = get_Search_Impl(date_sel,key,page,pageSize)
+
+    response = jsonify(result_json)
+    print("处理完成！！")
+
+    # response = jsonify(test_json)
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
+    # return response.data.decode('utf-8')  # 将字节串解码为UTF-8字符串
+    return response  # 将字节串解码为UTF-8字符串
 
 if __name__ == '__main__':
     # app.run(debug=True)

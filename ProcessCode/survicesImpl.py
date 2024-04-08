@@ -1,6 +1,8 @@
 # dev实验版 所以堆到一起 以上的代码实际中在另一个文件
 import pandas as pd
 from ProcessCode.DateDataGET import DateDataGET_Impl              # 正式版记得打开  同级 修改路径
+# from ProcessCode.DateDataRedisGET import DateDataGET_Impl              # 正式版记得打开  同级 修改路径
+
 from ProcessCode.DateDataProcess import DateDataProcess_Impl     # 正式版记得打开
 # import DateDataGET
 # import DateDataProcess
@@ -110,12 +112,28 @@ def get_data_ByType_Impl(date_sel,artType,page,pageSize):
 
     # 读取时读全部 然后选择时按照pageSize进行选择显示
     print(type(pageSize))
-    filtered_data = filtered_data.head(int(pageSize))
+    # filtered_data = filtered_data.head(int(pageSize))
 
+    # 分页
+    # 计算总页数
+    total_pages = len(filtered_data) // int(pageSize) + (1 if len(filtered_data) % int(pageSize) > 0 else 0)
+    print("total_pages:",total_pages)
+    # 计算当前页面的起始索引和结束索引
+    start_index = int(page) * int(pageSize)
+    end_index = start_index + int(pageSize)
+    print("start_index:",start_index)
+    print("end_index:",end_index)
+
+    # 获取当前页面的数据
+    page_data = filtered_data.iloc[start_index:end_index]
+    
+    
     # 将每个id对应的数据包装成json格式
     result_json = []
     # for index, row in merged_data.iterrows():
-    for index, row in filtered_data.iterrows():
+    # for index, row in filtered_data.iterrows():
+    for index, row in page_data.iterrows():
+
         data_dict = {
             'artId': row['id'],
             'total_rank': row['total_rank'],
@@ -274,8 +292,58 @@ def get_randomArt_Impl(date_sel,page,pageSize):
 
 
 
-
-
+# 搜索功能 实现
+def get_Search_Impl(date_sel, key,page,pageSize):
+    merged_data = get_merge_data(date_sel)
+    
+    # 筛选出title列或body列中含有关键字的数据
+    filtered_data = merged_data[merged_data['title'].str.contains(key) | merged_data['body'].str.contains(key)]
+    
+    result_json = []
+    for index, row in filtered_data.iterrows():
+        data_dict = {
+            'artId': row['id'],
+            'total_rank': row['total_rank'],
+            'websiteUrl': row['url'],
+            'website_id': row['website_id'],
+            'request_url': row['request_url'],
+            'response_url': row['response_url'],
+            'artType': row['category1'],
+            'artTitle': row['title'],
+            'abstract': row['abstract'],
+            'artContent': row['body'],
+            'artTime': row['pub_time'],
+            'cole_time': row['cole_time'],
+            'artImageUrl': row['images'],
+            'language_id': row['language_id'],
+            'md5': row['md5'],
+            'artCusId': 582,
+            "customer": {
+                "cusId": 582,
+                "cusName": "admin",
+                "cusPass": None,
+                "cusSpider": "",
+                "cusAvatarUrl": "http://localhost:8080/img/Man.png",
+                "cusStyle": "这个人很懒, 什么都没写",
+                "cusGender": 0,
+                "cusTime": "2024-03-14T21:53:09.000+0000",
+                "cusLegal": 0
+            },
+            "artFeature": {
+                "afcId": 710,
+                "afcArtId": 20171864,
+                "afcLikeNum": 0,
+                "afcDislikeNum": 0,
+                "afcComNum": 0,
+                "afcRepNum": 0,
+                "afcReadNum": 0,
+                "afcArtTime": None
+            },
+            "cusArtBehavior": None
+        }
+        result_json.append(data_dict)
+    
+    return result_json
 
 
 

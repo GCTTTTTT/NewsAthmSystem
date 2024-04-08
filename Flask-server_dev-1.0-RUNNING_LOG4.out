@@ -1,0 +1,33 @@
+/root/data/NewsAthmSystem/ProcessCode/DateDataGET.py:38: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(query, conn)
+[2024-04-07 18:02:50,023] ERROR in app: Exception on /type [GET]
+Traceback (most recent call last):
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "Flask-server_dev-1.0.py", line 66, in get_Categorys
+    category_list = get_Categorys_Impl(date_sel)
+  File "/root/data/NewsAthmSystem/ProcessCode/survicesImpl.py", line 160, in get_Categorys_Impl
+    merged_data = get_merge_data(date_sel)
+  File "/root/data/NewsAthmSystem/ProcessCode/survicesImpl.py", line 21, in get_merge_data
+    DateDataGET_Impl(date_sel) # 从数据库中获取每日新闻数据
+  File "/root/data/NewsAthmSystem/ProcessCode/DateDataGET.py", line 52, in DateDataGET_Impl
+    df.to_csv(output_file_path, index=False)
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/pandas/core/generic.py", line 3772, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/pandas/io/formats/format.py", line 1186, in to_csv
+    csv_formatter.save()
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/pandas/io/formats/csvs.py", line 240, in save
+    with get_handle(
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/pandas/io/common.py", line 737, in get_handle
+    check_parent_directory(str(handle))
+  File "/opt/conda/envs/angle/lib/python3.8/site-packages/pandas/io/common.py", line 600, in check_parent_directory
+    raise OSError(rf"Cannot save file into a non-existent directory: '{parent}'")
+OSError: Cannot save file into a non-existent directory: 'datasets/mbert_BiLSTM_SelfAttention/2024-03-23'
